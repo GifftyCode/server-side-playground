@@ -14,3 +14,6 @@ console.log(calc1.add(2, 4))
 
 const {add, sub} = require("./test-module-2")
 console.log(sub(12, 3))
+
+// caching 
+require("./test-module-3")() 
