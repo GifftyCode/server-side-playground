@@ -1,11 +1,20 @@
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
 
 const app = express();
 
+// MIDDLEWARE
 app.use(express.json());
+app.use(morgan('dev'));
+
 app.use((req, res, next) => {
   console.log('Hello from Middleware 👋... ');
+  next();
+});
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
   next();
 });
 
@@ -13,9 +22,12 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`, 'utf-8'),
 );
 
+// ROUTE HANDLERS
 function getAllTours(req, res) {
+  console.log(req.requestTime);
   res.status(200).json({
     status: 'success',
+    requestedAt: req.requestTime,
     result: tours.length,
     data: {
       tours,
@@ -40,6 +52,41 @@ const getTour = (req, res) => {
     data: {
       tour,
     },
+  });
+};
+
+const getAllUsers = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defined...',
+  });
+};
+
+const getUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defined...',
+  });
+};
+
+const createUsers = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defined...',
+  });
+};
+
+const updateUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defined...',
+  });
+};
+
+const deleteUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defined...',
   });
 };
 
@@ -103,6 +150,7 @@ const deleteTour = (req, res) => {
 
 // app.delete('/api/v1/tours/:id', deleteTour);
 
+//ROUTES
 app.route('/api/v1/tours').get(getAllTours).post(createTour);
 app
   .route('/api/v1/tours/:id')
@@ -110,6 +158,14 @@ app
   .patch(updateTour)
   .delete(deleteTour);
 
+app.route('/api/v1/users').get(getAllUsers).post(createUsers);
+app
+  .route('/api/v1/users/:id')
+  .get(getUser)
+  .patch(updateUser)
+  .delete(deleteUser);
+
+// START SERVER
 const port = 3000;
 app.listen(port, () => {
   console.log(`App running on port ${port}...`);
