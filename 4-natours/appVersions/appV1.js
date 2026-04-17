@@ -49,6 +49,7 @@ app.post('/api/v1/tours', (req, res) => {
   // console.log(req.body);
   const newId = tours[tours.length - 1].id + 1;
   const newTour = Object.assign({ id: newId }, req.body);
+  // const newTour = { ...req.body, id: newId };
 
   // assign allows us to create new object by merging  existing objects together
 
