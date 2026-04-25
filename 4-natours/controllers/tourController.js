@@ -1,3 +1,4 @@
+const { match } = require('node:assert');
 const Tour = require('../models/tourModel');
 
 exports.getAllTours = async (req, res) => {
@@ -19,13 +20,33 @@ exports.getAllTours = async (req, res) => {
 
     // TO QUERY OUR DATA USING PAGINATION, FIELDS ETC
     // BUILD THE QUERY
+    // 1a FILTERING
     const queryObj = { ...req.query };
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach((el) => delete queryObj[el]);
 
     console.log(req.query, queryObj);
 
-    const query = await Tour.find(queryObj);
+    // const query = await Tour.find(queryObj);
+
+    // 1b ADVANCE FILTERING
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    console.log(JSON.parse(queryStr));
+
+    // let query = await Tour.find(JSON.parse(queryStr));
+
+    // 2 SORTING
+
+    let query = Tour.find(JSON.parse(queryStr));
+
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      console.log(sortBy);
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort('-createdAt');
+    }
 
     // EXECUTE THE QUERY
     const tours = await query;
