@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "slugify": "^1.6.9",
     "superagent": "^10.3.0"
   }
 }
