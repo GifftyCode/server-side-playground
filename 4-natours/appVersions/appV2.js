@@ -5,9 +5,13 @@ const morgan = require('morgan');
 const app = express();
 
 // MIDDLEWARE
+// Express built in middleware
 app.use(express.json());
+
+// 3rd party middleware
 app.use(morgan('dev'));
 
+// Creadting our own middleware
 app.use((req, res, next) => {
   console.log('Hello from Middleware 👋... ');
   next();
@@ -140,6 +144,8 @@ const deleteTour = (req, res) => {
   });
 };
 
+// ROUTES
+// Using direct routes
 // app.get('/api/v1/tours', getAllTours);
 
 // app.get('/api/v1/tours/:id', getTour);
@@ -150,20 +156,33 @@ const deleteTour = (req, res) => {
 
 // app.delete('/api/v1/tours/:id', deleteTour);
 
-//ROUTES
-app.route('/api/v1/tours').get(getAllTours).post(createTour);
-app
-  .route('/api/v1/tours/:id')
-  .get(getTour)
-  .patch(updateTour)
-  .delete(deleteTour);
+// Using custome routes
+// app.route('/api/v1/tours').get(getAllTours).post(createTour);
+// app
+//   .route('/api/v1/tours/:id')
+//   .get(getTour)
+//   .patch(updateTour)
+//   .delete(deleteTour);
 
-app.route('/api/v1/users').get(getAllUsers).post(createUsers);
-app
-  .route('/api/v1/users/:id')
-  .get(getUser)
-  .patch(updateUser)
-  .delete(deleteUser);
+// app.route('/api/v1/users').get(getAllUsers).post(createUsers);
+// app
+//   .route('/api/v1/users/:id')
+//   .get(getUser)
+//   .patch(updateUser)
+//   .delete(deleteUser);
+
+// Creating and mounting multiple routers
+const tourRouter = express.Router();
+const userRouter = express.Router();
+
+tourRouter.route('/').get(getAllTours).post(createTour);
+tourRouter.route('/:id').get(getTour).patch(updateTour).delete(deleteTour);
+
+userRouter.route('/').get(getAllUsers).post(createUsers);
+userRouter.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
+
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
 
 // START SERVER
 const port = 3000;
