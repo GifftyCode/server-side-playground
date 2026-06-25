@@ -12,12 +12,15 @@ exports.getAllTours = async (req, res) => {
   try {
     // TO FILTER TOURS USING QUERY PARAMS
     console.log(req.query);
+    // Simple filtering logic
+    // console.log(req.query)
+    // const tours = await Tour.find(req.query)
+
+    // Using specified query
     // const tours = await Tour.find({
     //   duration: 5,
     //   difficulty: 'easy',
     // });
-
-    // const tours = await Tour.find(req.query);
 
     // const tours = await Tour.find()
     //   .where('duration')
@@ -55,7 +58,7 @@ exports.getAllTours = async (req, res) => {
       query = query.sort('-createdAt');
     }
 
-    // 3 FIELDS LIMOITING
+    // 3 FIELDS LIMITING
     if (req.query.fields) {
       const fields = req.query.fields.split(',').join(' ');
       query = query.select(fields);
@@ -81,6 +84,7 @@ exports.getAllTours = async (req, res) => {
 
     // const tours = await Tour.find();
 
+    // SEND RESPONSE
     res.status(200).json({
       status: 'success',
       result: tours.length,
