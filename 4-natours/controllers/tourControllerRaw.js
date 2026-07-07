@@ -1,8 +1,6 @@
 const { match } = require('node:assert');
 const Tour = require('../models/tourModel');
-const APIFeatures = require('./../utils/apiFeatures');
-
-import catchAsync from '../utils/catchAsync';
+const APIFeatures = require('../utils/apiFeatures');
 
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
@@ -59,16 +57,23 @@ exports.getTour = async (req, res) => {
   }
 };
 
-exports.createTour = catchAsync(async (req, res, next) => {
-  const newTour = await Tour.create(req.body);
+exports.createTour = async (req, res) => {
+  try {
+    const newTour = await Tour.create(req.body);
 
-  res.status(201).json({
-    status: 'success',
-    data: {
-      tour: newTour,
-    },
-  });
-});
+    res.status(201).json({
+      status: 'success',
+      data: {
+        tour: newTour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
 
 exports.updateTour = async (req, res) => {
   try {
